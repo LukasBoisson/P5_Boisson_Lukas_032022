@@ -15,6 +15,9 @@ let productPrice = document.getElementById("price");
 let productDescription = document.getElementById("description");
 let color = document.getElementById("colors");
 
+//masque la valeur de la couleur par défaut
+color[0].setAttribute("disabled", "");
+
 //récupération et affichage des infos du produit sur la page produit en fonction de son id
 fetch("http://localhost:3000/api/products/" + id)
   .then(function (res) {
@@ -42,16 +45,11 @@ fetch("http://localhost:3000/api/products/" + id)
       if (chosenQuantity > 0 && chosenQuantity <= 100) {
         const chosenProduct = {
           id: id,
-          productName: product.name,
-          productPrice: product.price,
-          productDescription: product.description,
           productColor: chosenColor,
           productQuantity: Number(chosenQuantity),
-          productImage: product.imageUrl,
-          productImageAlt: product.altTxt,
         };
 
-        const cartArray = [];
+        let cartArray = [];
 
         // vérifier si le localstorage contient des produits
         if (localStorage.getItem("cart")) {
@@ -76,10 +74,9 @@ fetch("http://localhost:3000/api/products/" + id)
         }
 
         localStorage.setItem("cart", JSON.stringify(cartArray));
-      } else if (chosenQuantity <= 0) {
-        alert("Veuillez choisir une quantité comprise entre 1 et 100.");
-      } else if (chosenColor === "" || chosenColor === null) {
-        alert("Veuillez choisir une couleur.");
+      } else {
+        //si un produit n'a pas de quantité selectionnée on désactive le bouton addToCart
+        addToCartButton.disabled = false;
       }
     });
   })
